@@ -17,96 +17,85 @@ A Tony Stark-inspired real-time dashboard for monitoring and managing OpenClaw a
 - 🎮 **Quick Actions** - Restart gateway, open terminal, notifications
 - 📊 **Activity Feed** - Track all dashboard activities
 
-## 🚀 Remote Access Setup (ngrok)
+## 🚀 Deploy to Railway (Permanent URL)
 
-Your MacBook runs Max-Dash locally. Use ngrok to expose it to the internet.
+### Option 1: Quick Deploy (Recommended)
 
-### Step 1: Configure ngrok
+1. **Click the button below:**
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new?template=https://github.com/MyindMedia/max-dash2)
+
+2. **Or deploy manually:**
+   - Go to https://railway.app
+   - Click "New Project" → "Deploy from GitHub repo"
+   - Select: `MyindMedia/max-dash2`
+   - Configure:
+     - **Root Directory:** `.`
+     - **Start Command:** `node server.js`
+     - **Port:** `3000`
+
+3. **Done!** 🎉 Your URL will be something like:
+   - `https://max-dash.up.railway.app`
+
+### Option 2: Railway CLI
 
 ```bash
-# Add your ngrok authtoken (get it from https://dashboard.ngrok.com/auth)
-ngrok config add-authtoken YOUR_AUTHTOKEN_HERE
+# Install Railway CLI
+npm i -g @railway/cli
+
+# Login
+railway login
+
+# Deploy
+railway init
+railway up
 ```
 
-### Step 2: Start Max-Dash with Tunnel
+## 🔧 Configuration
+
+### Environment Variables (Optional)
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Port to listen on | `3000` |
+| `NODE_ENV` | Environment | `production` |
+
+### Build Settings
+
+```
+Build Command: (leave empty)
+Start Command: node server.js
+Root Directory: .
+```
+
+## 🏠 Local Development
 
 ```bash
 cd /Users/myindsound/Documents/discord/max-dash2
 
-# Option A: Use the startup script
-./start.sh
+# Install dependencies
+npm install
 
-# Option B: Start manually
-pm2 start ecosystem.config.js
+# Start server
+npm start
+
+# Open http://localhost:3000
 ```
-
-### Step 3: Get Your Public URL
-
-```bash
-./get-url.sh
-```
-
-This will output something like:
-```
-🌐 Public URL: https://abcd-1234.ngrok-free.app
-```
-
-Open that URL on any device to access Max-Dash remotely!
-
-### Alternative: Start Services Separately
-
-```bash
-# Start just the dashboard
-pm2 start server.js --name max-dash
-
-# Start ngrok tunnel
-ngrok start --all --config=/Users/myindsound/.ngrok2/max-dash.yml
-
-# Check tunnel URL
-curl localhost:4040/api/tunnels
-```
-
-## 🔧 Management Commands
-
-```bash
-# View all services
-pm2 status
-
-# View logs
-pm2 logs max-dash
-pm2 logs ngrok
-
-# Restart both
-pm2 restart max-dash && pm2 restart ngrok
-
-# Stop everything
-pm2 stop all
-
-# Auto-start on boot (already configured)
-pm2 save
-```
-
-## 🌐 URLs
-
-- **Local**: http://localhost:3000
-- **Remote**: Check ngrok URL (changes each restart)
-- **Tunnel Status**: http://localhost:4040
 
 ## 📁 Project Structure
 
 ```
 max-dash2/
 ├── server.js              # Express + Socket.io server
-├── ecosystem.config.js     # PM2 config (dashboard + ngrok)
-├── start.sh              # Startup script
-├── get-url.sh            # Get public URL
+├── railway.json          # Railway deployment config
+├── ecosystem.config.js    # PM2 config for local
 ├── public/
 │   ├── index.html        # Dashboard UI with Tony Stark loading
 │   ├── css/
-│   │   └── styles.css    # Dark purple theme
+│   │   └── styles.css   # Dark purple theme
 │   └── js/
-│       └── app.js        # Real-time application logic
-├── Dockerfile            # Container deployment
+│       └── app.js       # Real-time application logic
+├── Dockerfile            # Docker deployment
 ├── netlify.toml         # Netlify static deploy
 └── package.json
 ```
@@ -118,15 +107,14 @@ max-dash2/
 - **Animations**: Smooth transitions, glowing effects
 - **Loading Screen**: Arc reactor animation with MAX-DASH hologram
 
+## 📝 Notes
+
+- WebSocket connection required for real-time updates
+- System monitoring shows the server's stats (not your local Mac when deployed on Railway)
+- For local Mac monitoring, use the ngrok tunnel setup instead
+
 ## 🔗 Links
 
 - **GitHub**: https://github.com/MyindMedia/max-dash2
 - **Local**: http://localhost:3000
-- **ngrok Dashboard**: http://localhost:4040
-
-## 📝 Notes
-
-- WebSocket connection required for real-time updates
-- ngrok URL changes each time you restart the tunnel
-- For a permanent URL, upgrade to ngrok paid plan or use a reverse proxy with DNS
-- OpenClaw gateway must be running on your MacBook for full functionality
+- **Railway**: https://railway.app

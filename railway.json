@@ -1,0 +1,11 @@
+{
+  "name": "max-dash",
+  "description": "OpenClaw Mission Control Dashboard",
+  "repository": "https://github.com/MyindMedia/max-dash2",
+  "buildCommand": "",
+  "startCommand": "node server.js",
+  "healthCheckPath": "/",
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo "🔐 Ngrok Authtoken Setup"
+echo "========================"
+echo ""
+echo "To get your ngrok authtoken:"
+echo "1. Go to: https://dashboard.ngrok.com/auth"
+echo "2. Copy your authtoken"
+echo "3. Run this command with your token:"
+echo ""
+echo "   ngrok config add-authtoken YOUR_TOKEN_HERE"
+echo ""
+echo "After adding the authtoken, run:"
+echo ""
+echo "   cd /Users/myindsound/Documents/discord/max-dash2"
+echo "   ./start-tunnel.sh"
+echo ""
+echo "This will start Max-Dash and create a public tunnel!"

@@ -17,99 +17,98 @@ A Tony Stark-inspired real-time dashboard for monitoring and managing OpenClaw a
 - 🎮 **Quick Actions** - Restart gateway, open terminal, notifications
 - 📊 **Activity Feed** - Track all dashboard activities
 
-## 🚀 Deployment Options
+## 🚀 Remote Access Setup (ngrok)
 
-### Option 1: Railway (Recommended - Full App)
+Your MacBook runs Max-Dash locally. Use ngrok to expose it to the internet.
 
-Railway supports WebSockets and long-running Node.js processes.
+### Step 1: Configure ngrok
 
-1. **Push to GitHub**
-   ```bash
-   cd /Users/myindsound/Documents/discord/max-dash2
-   git add -A
-   git commit -m "Ready for deployment"
-   git push
-   ```
+```bash
+# Add your ngrok authtoken (get it from https://dashboard.ngrok.com/auth)
+ngrok config add-authtoken YOUR_AUTHTOKEN_HERE
+```
 
-2. **Deploy on Railway**
-   - Go to https://railway.app
-   - Connect your GitHub repository
-   - Set start command: `node server.js`
-   - Set port: `3000`
-
-3. **Your URL will be**: `https://max-dash.up.railway.app`
-
-### Option 2: Render (Free Tier Available)
-
-1. **Push to GitHub** (already done ✓)
-
-2. **Deploy on Render**
-   - Go to https://render.com
-   - Create new Web Service
-   - Connect your repository
-   - Build Command: `(empty)`
-   - Start Command: `node server.js`
-   - Plan: Free
-
-3. **Your URL will be**: `https://max-dash.onrender.com`
-
-### Option 3: Netlify (Frontend Only)
-
-Netlify can only deploy the static frontend. System monitoring won't work.
-
-1. **Deploy frontend only**
-   ```bash
-   cd public
-   netlify deploy --prod --dir=.
-   ```
-
-2. **Connect to local server** - Set API endpoint to your server URL
-
-## 🏠 Local Development
+### Step 2: Start Max-Dash with Tunnel
 
 ```bash
 cd /Users/myindsound/Documents/discord/max-dash2
 
-# Install dependencies
-npm install
+# Option A: Use the startup script
+./start.sh
 
-# Start server
-npm start
-
-# Open http://localhost:3000
+# Option B: Start manually
+pm2 start ecosystem.config.js
 ```
+
+### Step 3: Get Your Public URL
+
+```bash
+./get-url.sh
+```
+
+This will output something like:
+```
+🌐 Public URL: https://abcd-1234.ngrok-free.app
+```
+
+Open that URL on any device to access Max-Dash remotely!
+
+### Alternative: Start Services Separately
+
+```bash
+# Start just the dashboard
+pm2 start server.js --name max-dash
+
+# Start ngrok tunnel
+ngrok start --all --config=/Users/myindsound/.ngrok2/max-dash.yml
+
+# Check tunnel URL
+curl localhost:4040/api/tunnels
+```
+
+## 🔧 Management Commands
+
+```bash
+# View all services
+pm2 status
+
+# View logs
+pm2 logs max-dash
+pm2 logs ngrok
+
+# Restart both
+pm2 restart max-dash && pm2 restart ngrok
+
+# Stop everything
+pm2 stop all
+
+# Auto-start on boot (already configured)
+pm2 save
+```
+
+## 🌐 URLs
+
+- **Local**: http://localhost:3000
+- **Remote**: Check ngrok URL (changes each restart)
+- **Tunnel Status**: http://localhost:4040
 
 ## 📁 Project Structure
 
 ```
 max-dash2/
-├── server.js          # Express + Socket.io server
+├── server.js              # Express + Socket.io server
+├── ecosystem.config.js     # PM2 config (dashboard + ngrok)
+├── start.sh              # Startup script
+├── get-url.sh            # Get public URL
 ├── public/
-│   ├── index.html     # Dashboard UI with Tony Stark loading
+│   ├── index.html        # Dashboard UI with Tony Stark loading
 │   ├── css/
-│   │   └── styles.css # Dark purple theme
+│   │   └── styles.css    # Dark purple theme
 │   └── js/
-│       └── app.js     # Real-time application logic
-├── Dockerfile         # Container deployment
-├── netlify.toml      # Netlify static deploy
+│       └── app.js        # Real-time application logic
+├── Dockerfile            # Container deployment
+├── netlify.toml         # Netlify static deploy
 └── package.json
-```
-
-## 🔧 PM2 Management (Local)
-
-```bash
-# Start with PM2
-pm2 start server.js --name max-dash
-
-# View logs
-pm2 logs max-dash
-
-# Restart
-pm2 restart max-dash
-
-# Auto-start on boot
-pm2 startup
-pm2 save
 ```
 
 ## 🎨 Design
@@ -123,9 +122,11 @@ pm2 save
 
 - **GitHub**: https://github.com/MyindMedia/max-dash2
 - **Local**: http://localhost:3000
+- **ngrok Dashboard**: http://localhost:4040
 
 ## 📝 Notes
 
 - WebSocket connection required for real-time updates
-- System monitoring only works when running locally or on a Linux server
-- PM2 management only available when running on the same machine as PM2
+- ngrok URL changes each time you restart the tunnel
+- For a permanent URL, upgrade to ngrok paid plan or use a reverse proxy with DNS
+- OpenClaw gateway must be running on your MacBook for full functionality

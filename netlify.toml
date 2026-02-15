@@ -1,0 +1,19 @@
+# Netlify Configuration
+# This deploys only the static frontend
+# For the full app with WebSocket, use Railway/Render
+
+[build]
+  publish = "public"
+  command = "echo 'Static build complete'"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers for WebSocket support when using a separate backend
+[[headers]]
+  for = "/socket.io/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Connection = "keep-alive"
